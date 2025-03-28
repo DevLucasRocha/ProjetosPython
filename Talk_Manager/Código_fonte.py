@@ -6,6 +6,7 @@ import json
 TASKS_FILE = "tasks.json"
 
 def load_tasks():
+
     """Carrega as tarefas do arquivo JSON."""
     try:
         with open(TASKS_FILE, "r") as file:
@@ -14,11 +15,13 @@ def load_tasks():
         return []
 
 def save_tasks():
+
     """Salva as tarefas no arquivo JSON."""
     with open(TASKS_FILE, "w") as file:
         json.dump(tasks, file)
 
 def add_task():
+
     """Adiciona uma nova tarefa à lista."""
     task = task_entry.get()
     if task:
@@ -30,6 +33,7 @@ def add_task():
         messagebox.showwarning("Aviso", "Digite uma tarefa!")
 
 def remove_task():
+
     """Remove a tarefa selecionada."""
     try:
         selected_index = task_listbox.curselection()[0]
@@ -40,6 +44,7 @@ def remove_task():
         messagebox.showwarning("Aviso", "Selecione uma tarefa para remover!")
 
 def update_listbox():
+    
     """Atualiza a lista de tarefas exibida na interface."""
     
     task_listbox.delete(0, tk.END)
