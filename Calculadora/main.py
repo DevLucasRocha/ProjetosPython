@@ -173,8 +173,8 @@ class CalculadoraDBZ:
                 pygame.mixer.music.stop()
                 self.btn_musica.config(text="🔇 OFF")
             else:
-                if os.path.exists("dbz_cha-la.mp3"):
-                    pygame.mixer.music.load("dbz_cha-la.mp3")
+                if os.path.exists("dbz_cha-la.wav"):
+                    pygame.mixer.music.load("dbz_cha-la.wav")
                     pygame.mixer.music.play(loops=-1)
                 self.btn_musica.config(text="🔊 ON")
             self.musica_ligada = not self.musica_ligada
