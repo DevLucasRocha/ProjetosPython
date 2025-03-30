@@ -1,11 +1,11 @@
-import tkinter as tk # para criação da interface gráfica
-from tkinter import font # para formatação de texto
-import math # para cálculos matemáticos
-import pygame # para reprodução de música
-from PIL import Image, ImageTk # para manipulação de imagens
-import os # para manipulação de arquivos e diretórios
+import tkinter as tk
+from tkinter import font
+import math
+import pygame
+from PIL import Image, ImageTk
+import os
 
-class CalculadoraDBZ: # classe principal
+class CalculadoraDBZ:
     def __init__(self, root):
         self.root = root
         self.root.title("Calculator Ball Z")
@@ -14,11 +14,11 @@ class CalculadoraDBZ: # classe principal
         
         # Cores DBZ
         self.COR_FUNDO = '#2a2a2a'
-        self.COR_BOTOES = '#ff8c00'  # Laranja
-        self.COR_BOTOES_ESPECIAIS = '#00bfff'  # Azul
+        self.COR_BOTOES = '#ff8c00'
+        self.COR_BOTOES_ESPECIAIS = '#00bfff'
         self.COR_TEXTO = '#ffffff'
         self.COR_DISPLAY = '#1e1e1e'
-        self.COR_DESTAQUE = '#ffd700'  # Amarelo DBZ
+        self.COR_DESTAQUE = '#ffd700'
         
         # Inicializar pygame para música
         pygame.mixer.init()
@@ -39,51 +39,37 @@ class CalculadoraDBZ: # classe principal
     
     def carregar_assets(self):
         """Carrega imagens e verifica arquivos"""
+        self.dbz_logo = None
+        self.bg_image = None
+        
         try:
-            # Verifica se arquivos existem
-            if not os.path.exists("dbz_logo.png"):
-                raise FileNotFoundError
+            if os.path.exists("dbz_logo.png"):
+                img_dbz = Image.open("dbz_logo.png")
+                img_dbz = img_dbz.resize((250, 100), Image.LANCZOS)
+                self.dbz_logo = ImageTk.PhotoImage(img_dbz)
             
-            # Carrega logo DBZ
-            img_dbz = Image.open("dbz_logo.png")
-            img_dbz = img_dbz.resize((250, 100), Image.LANCZOS)
-            self.dbz_logo = ImageTk.PhotoImage(img_dbz)
-            
-            # Tenta carregar imagem de fundo
             if os.path.exists("dbz_bg.jpg"):
                 bg_img = Image.open("dbz_bg.jpg")
                 bg_img = bg_img.resize((400, 650), Image.LANCZOS)
                 self.bg_image = ImageTk.PhotoImage(bg_img)
-            else:
-                self.bg_image = None
                 
         except Exception as e:
-            print(f"Erro ao carregar assets: {e}")
-            self.dbz_logo = None
-            self.bg_image = None
-    
+            print(f"AVISO: Assets não carregados - {e}")
+
     def criar_interface(self):
-        # Cria todos os elementos visuais"""
-    
-        # Canvas principal
+        """Cria todos os elementos visuais"""
         self.canvas = tk.Canvas(self.root, bg=self.COR_FUNDO, highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
         
-        # Fundo com imagem ou cor sólida
         if self.bg_image:
             self.canvas.create_image(0, 0, image=self.bg_image, anchor='nw')
-        else:
-            self.canvas.config(bg=self.COR_FUNDO)
         
-        # Logo DBZ
         if self.dbz_logo:
             self.canvas.create_image(200, 60, image=self.dbz_logo)
         
-        # Frame principal
-        main_frame = tk.Frame(self.canvas, bg='')
+        main_frame = tk.Frame(self.canvas, bg=self.COR_FUNDO)
         main_frame.place(relx=0.5, rely=0.55, anchor='center', width=380, height=500)
         
-        # Display (visor)
         self.var_display = tk.StringVar()
         self.var_display.set("0")
         
@@ -100,11 +86,9 @@ class CalculadoraDBZ: # classe principal
         )
         display.pack(fill='x', ipady=10, pady=(0, 15))
         
-        # Frame de botões
-        botoes_frame = tk.Frame(main_frame, bg='')
+        botoes_frame = tk.Frame(main_frame, bg=self.COR_FUNDO)
         botoes_frame.pack(expand=True, fill='both')
         
-        # Botões numéricos e operações
         botoes = [
             ('7', 0, 0), ('8', 0, 1), ('9', 0, 2), ('/', 0, 3),
             ('4', 1, 0), ('5', 1, 1), ('6', 1, 2), ('*', 1, 3),
@@ -138,7 +122,6 @@ class CalculadoraDBZ: # classe principal
             botoes_frame.grid_columnconfigure(coluna, weight=1)
             botoes_frame.grid_rowconfigure(linha, weight=1)
         
-        # Botão de música
         self.btn_musica = tk.Button(
             self.canvas,
             text="🔊 ON",
@@ -151,8 +134,7 @@ class CalculadoraDBZ: # classe principal
         )
         self.btn_musica.place(x=10, y=10, width=60, height=30)
         
-        # Frame do histórico
-        historico_frame = tk.Frame(main_frame, bg='')
+        historico_frame = tk.Frame(main_frame, bg=self.COR_FUNDO)
         historico_frame.pack(fill='both', expand=True, pady=(10, 0))
         
         tk.Label(
@@ -160,7 +142,7 @@ class CalculadoraDBZ: # classe principal
             text="Histórico:",
             font=font.Font(family='Arial Black', size=10),
             fg=self.COR_DESTAQUE,
-            bg=''
+            bg=self.COR_FUNDO
         ).pack(anchor='w')
         
         self.historico_text = tk.Text(
@@ -174,7 +156,6 @@ class CalculadoraDBZ: # classe principal
         )
         self.historico_text.pack(fill='both', expand=True)
         
-        # Botão para limpar histórico
         tk.Button(
             historico_frame,
             text="Limpar Histórico",
@@ -184,7 +165,7 @@ class CalculadoraDBZ: # classe principal
             fg=self.COR_TEXTO,
             activebackground=self.COR_DESTAQUE
         ).pack(fill='x', pady=(5, 0))
-    
+
     def toggle_musica(self):
         """Liga/desliga a música tema"""
         try:
@@ -202,7 +183,6 @@ class CalculadoraDBZ: # classe principal
             self.btn_musica.config(text="❌ Erro")
     
     def clique_botao(self, valor):
-        """Gerencia cliques nos botões"""
         if valor == '=':
             self.calcular()
         elif valor == 'C':
@@ -215,7 +195,6 @@ class CalculadoraDBZ: # classe principal
             self.adicionar_expressao(valor)
     
     def adicionar_expressao(self, valor):
-        """Atualiza a expressão no display"""
         if self.var_display.get() == "0" and valor not in ['*', '/', '+', '-', '**', 'math.sqrt(']:
             self.expressao = valor
         else:
@@ -223,12 +202,10 @@ class CalculadoraDBZ: # classe principal
         self.var_display.set(self.expressao)
     
     def limpar_display(self):
-        """Reseta o display"""
         self.expressao = ""
         self.var_display.set("0")
     
     def calcular(self):
-        """Executa o cálculo"""
         try:
             expressao_segura = self.expressao.replace('^', '**')
             
@@ -253,8 +230,6 @@ class CalculadoraDBZ: # classe principal
             self.expressao = ""
     
     def atualizar_historico(self):
-
-        """Atualiza a exibição do histórico"""
         self.historico_text.config(state='normal')
         self.historico_text.delete(1.0, tk.END)
         
@@ -265,8 +240,6 @@ class CalculadoraDBZ: # classe principal
         self.historico_text.yview(tk.END)
     
     def limpar_historico(self):
-
-        """Limpa todo o histórico"""
         self.historico = []
         self.atualizar_historico()
 
